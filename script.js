@@ -1,25 +1,43 @@
 $(document).ready(function () {
-    const scheduleUrl = 'https://api.npoint.io/2905ef9d18336a999b88'
-   
+  const scheduleContainer = $("#scheduleList");
+  const btn = $("#submitDay");
 
-// schedule
-  const bellSchedule = {
-    1:{ start: '8:24 AM', end: '9:31 AM'},
-    2:{ start: '9:36 AM', end: '10:43 AM'},
-    3:{ start: '10:48 AM', end: '11:55 AM'},
-    4:{ start: '12:41 PM', end: '1:48 PM'},
-    5:{ start: '1:53 PM', end: '3:00 PM'}
-  }
+  // Event listener for the button click
+  btn.on("click", function () {
+    // Get the input value, trim whitespace, and convert to uppercase
+    let selectedDay = $("#dayInput").val().trim().toUpperCase();
+    console.log(selectedDay); // Log the selected day for debugging
 
+    // Validate the input to ensure it is a valid letter day (A-G)
+    if (!["A", "B", "C", "D", "E", "F", "G"].includes(selectedDay)) {
+      alert("Type a valid letter"); // Alert 
+      return; 
+    } else {
+      // Make an AJAX GET request to fetch the schedule data
+      $.ajax({
+        url: "https://api.npoint.io/e4f2d6f2c2ca276d9507", // URL of the hosted JSON file
+        method: "GET", // HTTP method for the request
+        success: function (data) {
+          // Log the full schedule data for debugging
+          const schedule = data.schedule;
+          console.log(schedule);
 
-  $('#submitDay').on('click', function () {
-    const selectedDay = $('#dayInput').val().toUpperCase()
+          // Filter the schedule to get classes that meet on the selected day
+          const daySchedule = schedule.filter(item => item.days.includes(selectedDay));
+          console.log(daySchedule); // Log the filtered schedule for debugging
 
-    // Makes sure that the user is putting a valid input 
-    if (!['A', 'B', 'C', 'D', 'E', 'F', 'G'].includes(selectedDay)) {
-      alert('Please enter a valid day (A-G)')
-      return
+          // Render the HTML for the filtered schedule
+          renderHTML(daySchedule);
+        },
+        error: function () {
+          // Alert the user if there is an error fetching the schedule
+          alert("Error. Try again.");
+        }
+      });
     }
+  });
 
-  })
-})
+    // Append the constructed HTML to the schedule list
+    $("#scheduleList").append(htmlString);
+  }
+});
