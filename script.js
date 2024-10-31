@@ -37,6 +37,29 @@ $(document).ready(function () {
     }
   });
 
+  // Function to render the schedule HTML based on the filtered daySchedule
+  function renderHTML(daySchedule) {
+    // Clear any previous content in the schedule list
+    $("#scheduleList").empty();
+    let htmlString = ""; // Initialize an empty string for the HTML content
+
+    // Check if there are classes for the selected day
+    if (daySchedule.length === 0) {
+      htmlString = '<tr><td colspan="4" class="text-center">No classes for this day.</td></tr>';
+    } else {
+      // Loop through each class in the daySchedule
+      daySchedule.forEach(function (classItem) {
+        // Construct an HTML string for each class row
+        htmlString += `
+          <tr>
+            <td>${classItem.period}</td>
+            <td>${classItem.class}</td>
+            <td>${classItem.teacher}</td>
+            <td>${classItem.room}</td>
+          </tr>`;
+      });
+    }
+
     // Append the constructed HTML to the schedule list
     $("#scheduleList").append(htmlString);
   }
